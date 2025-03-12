@@ -1,1 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Runaway Play Button</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+        }
+
+        #playButton {
+            font-size: 20px;
+            padding: 10px 20px;
+            border: none;
+            background-color: cyan;
+            color: black;
+            cursor: pointer;
+            position: absolute;
+            transition: transform 0.2s;
+        }
+
+        #progressBar {
+            width: 300px;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button id="playButton">▶ Play</button>
+        <input type="range" id="progressBar" value="0" min="0" max="100">
+    </div>
+
+    <audio id="audio" src="music.mp3"></audio>
+
+    <script>
+        const playButton = document.getElementById("playButton");
+        const audio = document.getElementById("audio");
+        const progressBar = document.getElementById("progressBar");
+
+        let isPlaying = false;
+        let volume = 0.1;  // Start with low volume
+
+        audio.volume = volume;
+
+        playButton.addEventListener("click", () => {
+            if (!isPlaying) {
+                audio.play();
+                isPlaying = true;
+                playButton.innerText = "🎵 Playing...";
+                moveButton();
+                increaseVolume();
+            }
+        });
+
+        audio.addEventListener("timeupdate", () => {
+            const progress = (audio.currentTime / audio.duration) * 100;
+            progressBar.value = progress;
+        });
+
+        function moveButton() {
+            document.addEventListener("mousemove", (e) => {
+                if (isPlaying) {
+                    let x = Math.random() * window.innerWidth * 0.8;
+                    let y = Math.random() * window.innerHeight * 0.8;
+                    playButton.style.transform = `translate(${x}px, ${y}px)`;
+                }
+            });
+        }
+
+        function increaseVolume() {
+            let volumeInterval = setInterval(() => {
+                if (volume < 1) {
+                    volume += 0.05;
+                    audio.volume = volume;
+                } else {
+                    clearInterval(volumeInterval);
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
 
